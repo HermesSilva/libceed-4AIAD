@@ -101,6 +101,8 @@ libCEED.includes
 
 # profiling files
 *.txt
+# 4AIAD: the Windows CMake build
+!/CMakeLists.txt
 *.proto
 *.csv
 

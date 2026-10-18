@@ -10,7 +10,9 @@
 #include <ceed.h>
 #include <ceed/backend.h>
 #include <assert.h>
+#if !defined(_WIN32)
 #include <dirent.h>
+#endif
 #include <errno.h>
 #include <limits.h>
 #include <stdarg.h>
@@ -19,8 +21,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <wordexp.h>
 #include <sys/stat.h>
+#if defined(_WIN32)
+// 4AIAD: Windows replacements for wordexp/opendir/mkdir used by the JiT cache directory.
+#include <direct.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#else
+#include <wordexp.h>
+#endif
 
 /// @cond DOXYGEN_SKIP
 static CeedRequest ceed_request_immediate;
@@ -321,8 +330,16 @@ void CeedDebugImpl256(const unsigned char color, const char *format, ...) {
   @sa CeedFree()
 **/
 int CeedMallocArray(size_t n, size_t unit, void *p) {
+#if defined(_WIN32)
+  // 4AIAD: no posix_memalign on Windows, and _aligned_malloc memory needs _aligned_free while CeedFree() also releases
+  // calloc/realloc and user-owned (CEED_OWN_POINTER) memory with free(). Use malloc (16-byte alignment); no kernel
+  // depends on CEED_ALIGN for correctness.
+  *(void **)p = malloc(n * unit);
+  CeedCheck(n * unit == 0 || *(void **)p, NULL, CEED_ERROR_MAJOR, "malloc failed to allocate %zd members of size %zd\n", n, unit);
+#else
   int ierr = posix_memalign((void **)p, CEED_ALIGN, n * unit);
   CeedCheck(ierr == 0, NULL, CEED_ERROR_MAJOR, "posix_memalign failed to allocate %zd members of size %zd\n", n, unit);
+#endif
   return CEED_ERROR_SUCCESS;
 }
 
@@ -1137,21 +1154,31 @@ int CeedRestoreJitDefines(Ceed ceed, const char ***jit_defines) {
   return CEED_ERROR_SUCCESS;
 }
 
+#if defined(_WIN32)
+#define CeedMkdir(path) _mkdir(path)
+#define CeedIsPathSeparator(c) ((c) == '/' || (c) == '\\')
+#else
+#define CeedMkdir(path) mkdir(path, 0777)
+#define CeedIsPathSeparator(c) ((c) == '/')
+#endif
+
 static int CeedMkdirParents(Ceed ceed, char *path) {
   for (char *pointer = path + 1; *pointer; pointer++) {
-    // Replace '/' with '\0', mkdir, reset and continue
-    if (*pointer == '/') {
+    // Replace '/' with '\0', mkdir, reset and continue (skip the drive root "C:/")
+    if (CeedIsPathSeparator(*pointer) && pointer[-1] != ':') {
+      const char separator = *pointer;
+
       *pointer = '\0';
 
-      int err = mkdir(path, 0777);
+      int err = CeedMkdir(path);
 
       CeedCheck(err == 0 || errno == EEXIST, ceed, CEED_ERROR_MAJOR, "Failed to create cache directory");
       errno    = 0;
-      *pointer = '/';
+      *pointer = separator;
     }
   }
   // Full path
-  int err = mkdir(path, 0777);
+  int err = CeedMkdir(path);
 
   CeedCheck(err == 0 || errno == EEXIST, ceed, CEED_ERROR_MAJOR, "Failed to create cache directory");
   errno = 0;
@@ -1168,6 +1195,40 @@ static int CeedMkdirParents(Ceed ceed, char *path) {
 
   @ref Backend
 **/
+#if defined(_WIN32)
+int CeedGetCacheDir(Ceed ceed, const char **cache_dir) {
+  const char *ceed_cache_base_dir;
+  const char  suffix[] = "libCEED";
+  char       *joined, *final_cache_dir;
+
+  CeedCall(CeedGetCacheBaseDir(ceed, &ceed_cache_base_dir));
+  CeedCheck(ceed_cache_base_dir != NULL, ceed, CEED_ERROR_INCOMPATIBLE, "Cache base directory must not be NULL");
+  {
+    const size_t base_length          = strlen(ceed_cache_base_dir);
+    const bool   needs_trailing_slash = !CeedIsPathSeparator(ceed_cache_base_dir[base_length - 1]);
+    const size_t length               = base_length + sizeof(suffix) + 1;
+
+    CeedCall(CeedCalloc(length, &joined));
+    snprintf(joined, length, "%s%s%s", ceed_cache_base_dir, needs_trailing_slash ? "/" : "", suffix);
+  }
+  // %VAR% expansion replaces the POSIX shell-style wordexp
+  {
+    const DWORD length = ExpandEnvironmentStringsA(joined, NULL, 0);
+
+    CeedCheck(length > 0, ceed, CEED_ERROR_INCOMPATIBLE, "Environment variable expansion failed: %s", joined);
+    CeedCall(CeedCalloc(length, &final_cache_dir));
+    ExpandEnvironmentStringsA(joined, final_cache_dir, length);
+  }
+  CeedCall(CeedFree(&joined));
+  {
+    const DWORD attributes = GetFileAttributesA(final_cache_dir);
+
+    if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY)) CeedCall(CeedMkdirParents(ceed, final_cache_dir));
+  }
+  *cache_dir = final_cache_dir;
+  return CEED_ERROR_SUCCESS;
+}
+#else
 int CeedGetCacheDir(Ceed ceed, const char **cache_dir) {
   const char *ceed_cache_base_dir;
   const char  suffix[] = "libCEED";
@@ -1214,6 +1275,7 @@ int CeedGetCacheDir(Ceed ceed, const char **cache_dir) {
   *cache_dir = final_cache_dir;
   return CEED_ERROR_SUCCESS;
 }
+#endif  // _WIN32
 
 /**
   @brief Restore the cache directory for temporary libCEED files aaquired with `CeedGetCacheDir()`
