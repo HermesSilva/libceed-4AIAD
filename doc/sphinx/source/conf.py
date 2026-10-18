@@ -307,7 +307,7 @@ for filename in glob.glob(os.path.join(
     destdir = os.path.dirname(os.path.relpath(filename, rootdir))
     mkdir_p(destdir)
     shutil.copy2(filename, destdir)
-shutil.copy2(os.path.join(rootdir, "README.md"), ".")
+shutil.copy2(os.path.join(rootdir, "README.upstream.md"), "README.md")  # 4AIAD: upstream README was renamed
 
 for filename in glob.glob(os.path.join(
         rootdir, "examples/**/*.csv"), recursive=True):
