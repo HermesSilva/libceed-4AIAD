@@ -126,8 +126,10 @@ int CeedTensorContractApplyEvenOdd(CeedTensorContract contract, CeedInt A, CeedI
                                    const CeedScalar *restrict u, CeedScalar *restrict v) {
   const CeedInt B_half = (B + 1) / 2;
   const CeedInt J_half = (J + 1) / 2;
-  CeedScalar    u_even[A * B_half * C], u_odd[A * B_half * C];
-  CeedScalar    w_even[A * J_half * C], w_odd[A * J_half * C];
+  CEED_VLA(CeedScalar, u_even, A * B_half * C);
+  CEED_VLA(CeedScalar, u_odd, A * B_half * C);
+  CEED_VLA(CeedScalar, w_even, A * J_half * C);
+  CEED_VLA(CeedScalar, w_odd, A * J_half * C);
 
   CeedCheck(symmetry_type == CEED_SYMMETRY_SYMMETRIC || symmetry_type == CEED_SYMMETRY_ANTISYMMETRIC, CeedTensorContractReturnCeed(contract),
             CEED_ERROR_MINOR, "Invalid symmetry type for even-odd application of TensorContraction");

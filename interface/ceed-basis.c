@@ -302,7 +302,8 @@ static int CeedBasisCreateProjectionMatrices(CeedBasis basis_from, CeedBasis bas
   CeedCall(CeedMatrixPseudoinverse(CeedBasisReturnCeed(basis_to), interp_to_source, Q * q_comp, P_to, interp_to_inv));
   // Build matrices
   CeedInt     num_matrices = 1 + (fe_space_to == CEED_FE_SPACE_H1) * (are_both_tensor ? 1 : dim);
-  CeedScalar *input_from[num_matrices], *output_project[num_matrices];
+  CEED_VLA(CeedScalar *, input_from, num_matrices);
+  CEED_VLA(CeedScalar *, output_project, num_matrices);
 
   input_from[0]     = (CeedScalar *)interp_from_source;
   output_project[0] = *interp_project;
@@ -662,7 +663,10 @@ static int CeedBasisApplyAtPoints_Core(CeedBasis basis, bool apply_add, CeedInt 
       CeedCall(CeedVectorGetArrayWrite(v, CEED_MEM_HOST, &v_array));
       switch (eval_mode) {
         case CEED_EVAL_INTERP: {
-          CeedScalar tmp[2][num_comp * CeedIntPow(Q_1d, dim)], chebyshev_x[Q_1d];
+          CEED_VLA(CeedScalar, tmp_0, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, tmp_1, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, chebyshev_x, Q_1d);
+          CeedScalar *tmp[2] = {tmp_0, tmp_1};
 
           // ---- Values at point
           for (CeedInt p = 0; p < total_num_points; p++) {
@@ -681,7 +685,10 @@ static int CeedBasisApplyAtPoints_Core(CeedBasis basis, bool apply_add, CeedInt 
           break;
         }
         case CEED_EVAL_GRAD: {
-          CeedScalar tmp[2][num_comp * CeedIntPow(Q_1d, dim)], chebyshev_x[Q_1d];
+          CEED_VLA(CeedScalar, tmp_0, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, tmp_1, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, chebyshev_x, Q_1d);
+          CeedScalar *tmp[2] = {tmp_0, tmp_1};
 
           // ---- Values at point
           for (CeedInt p = 0; p < total_num_points; p++) {
@@ -729,7 +736,10 @@ static int CeedBasisApplyAtPoints_Core(CeedBasis basis, bool apply_add, CeedInt 
 
       switch (eval_mode) {
         case CEED_EVAL_INTERP: {
-          CeedScalar tmp[2][num_comp * CeedIntPow(Q_1d, dim)], chebyshev_x[Q_1d];
+          CEED_VLA(CeedScalar, tmp_0, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, tmp_1, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, chebyshev_x, Q_1d);
+          CeedScalar *tmp[2] = {tmp_0, tmp_1};
 
           // ---- Values at point
           for (CeedInt p = 0; p < total_num_points; p++) {
@@ -748,7 +758,10 @@ static int CeedBasisApplyAtPoints_Core(CeedBasis basis, bool apply_add, CeedInt 
           break;
         }
         case CEED_EVAL_GRAD: {
-          CeedScalar tmp[2][num_comp * CeedIntPow(Q_1d, dim)], chebyshev_x[Q_1d];
+          CEED_VLA(CeedScalar, tmp_0, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, tmp_1, num_comp * CeedIntPow(Q_1d, dim));
+          CEED_VLA(CeedScalar, chebyshev_x, Q_1d);
+          CeedScalar *tmp[2] = {tmp_0, tmp_1};
 
           // ---- Values at point
           for (CeedInt p = 0; p < total_num_points; p++) {
@@ -1337,7 +1350,7 @@ int CeedMatrixMatrixMultiply(Ceed ceed, const CeedScalar *mat_A, const CeedScala
   @ref Utility
 **/
 int CeedQRFactorization(Ceed ceed, CeedScalar *mat, CeedScalar *tau, CeedInt m, CeedInt n) {
-  CeedScalar v[m];
+  CEED_VLA(CeedScalar, v, m);
 
   // Check matrix shape
   CeedCheck(n <= m, ceed, CEED_ERROR_UNSUPPORTED, "Cannot compute QR factorization with n > m");
@@ -1469,7 +1482,9 @@ int CeedSymmetricSchurDecomposition(Ceed ceed, CeedScalar *mat, CeedScalar *lamb
   // Check bounds for clang-tidy
   CeedCheck(n > 1, ceed, CEED_ERROR_UNSUPPORTED, "Cannot compute symmetric Schur decomposition of scalars");
 
-  CeedScalar v[n - 1], tau[n - 1], mat_T[n * n];
+  CEED_VLA(CeedScalar, v, n - 1);
+  CEED_VLA(CeedScalar, tau, n - 1);
+  CEED_VLA(CeedScalar, mat_T, n * n);
 
   // Copy mat to mat_T and set mat to I
   memcpy(mat_T, mat, n * n * sizeof(mat[0]));

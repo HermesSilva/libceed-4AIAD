@@ -1492,12 +1492,13 @@ int CeedInit(const char *resource, Ceed *ceed) {
     // LCOV_EXCL_START
     size_t lev_dis   = UINT_MAX;
     size_t lev_index = num_backends, lev_priority = CEED_MAX_BACKEND_PRIORITY;
+    // 4AIAD: one buffer for all backends (min_len <= stem_length), allocated outside the loop
+    CEED_VLA(size_t, column, stem_length + 1);
 
     for (size_t i = 0; i < num_backends; i++) {
       const char *prefix        = backends[i].prefix;
       size_t      prefix_length = strlen(backends[i].prefix);
       size_t      min_len       = (prefix_length < stem_length) ? prefix_length : stem_length;
-      size_t      column[min_len + 1];
 
       for (size_t j = 0; j <= min_len; j++) column[j] = j;
       for (size_t j = 1; j <= min_len; j++) {

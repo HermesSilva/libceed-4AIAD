@@ -10,6 +10,21 @@
 #include <immintrin.h>
 #include <stdbool.h>
 
+// 4AIAD: MSVC does not define __FMA__ (FMA3 ships with every AVX2 CPU) and has no operators on
+// vector types, so it always takes the _mm*_fmadd path.
+#if defined(_MSC_VER) && !defined(__clang__) && defined(__AVX2__) && !defined(__FMA__)
+#define __FMA__ 1
+#endif
+
+// 4AIAD: register tiles are sized by const parameters, which are VLAs for MSVC. The kernels are only
+// called through the fixed-size wrappers below (4x8 blocked, 8x8 remainder, 4x8 single), so MSVC
+// uses those maxima as compile-time bounds.
+#if defined(_MSC_VER) && !defined(__clang__)
+#define CEED_AVX_TILE(n, max) (max)
+#else
+#define CEED_AVX_TILE(n, max) (n)
+#endif
+
 #ifdef CEED_SCALAR_IS_FP64
 #define rtype __m256d
 #define loadu _mm256_loadu_pd
@@ -53,7 +68,7 @@ static inline int CeedTensorContract_Avx_Blocked(CeedTensorContract contract, Ce
     // Blocks of 4 rows
     for (CeedInt j = 0; j < (J / JJ) * JJ; j += JJ) {
       for (CeedInt c = 0; c < (C / CC) * CC; c += CC) {
-        rtype vv[JJ][CC / 4];  // Output tile to be held in registers
+        rtype vv[CEED_AVX_TILE(JJ, 4)][CEED_AVX_TILE(CC / 4, 2)];  // Output tile to be held in registers
         for (CeedInt jj = 0; jj < JJ; jj++) {
           for (CeedInt cc = 0; cc < CC / 4; cc++) vv[jj][cc] = loadu(&v[(a * J + j + jj) * C + c + cc * 4]);
         }
@@ -75,7 +90,7 @@ static inline int CeedTensorContract_Avx_Blocked(CeedTensorContract contract, Ce
 
     if (j < J) {
       for (CeedInt c = 0; c < (C / CC) * CC; c += CC) {
-        rtype vv[JJ][CC / 4];  // Output tile to be held in registers
+        rtype vv[CEED_AVX_TILE(JJ, 4)][CEED_AVX_TILE(CC / 4, 2)];  // Output tile to be held in registers
 
         for (CeedInt jj = 0; jj < J - j; jj++) {
           for (CeedInt cc = 0; cc < CC / 4; cc++) vv[jj][cc] = loadu(&v[(a * J + j + jj) * C + c + cc * 4]);
@@ -118,7 +133,7 @@ static inline int CeedTensorContract_Avx_Remainder(CeedTensorContract contract, 
     for (CeedInt c = (C / CC) * CC; c < C; c += 4) {
       // Blocks of 4 rows
       for (CeedInt j = 0; j < J_break; j += JJ) {
-        rtype vv[JJ];  // Output tile to be held in registers
+        rtype vv[CEED_AVX_TILE(JJ, 8)];  // Output tile to be held in registers
 
         for (CeedInt jj = 0; jj < JJ; jj++) vv[jj] = loadu(&v[(a * J + j + jj) * C + c]);
         for (CeedInt b = 0; b < B; b++) {
@@ -168,7 +183,7 @@ static inline int CeedTensorContract_Avx_Single(CeedTensorContract contract, Cee
   // Blocks of 4 rows
   for (CeedInt a = 0; a < (A / AA) * AA; a += AA) {
     for (CeedInt j = 0; j < (J / JJ) * JJ; j += JJ) {
-      rtype vv[AA][JJ / 4];  // Output tile to be held in registers
+      rtype vv[CEED_AVX_TILE(AA, 4)][CEED_AVX_TILE(JJ / 4, 2)];  // Output tile to be held in registers
 
       for (CeedInt aa = 0; aa < AA; aa++) {
         for (CeedInt jj = 0; jj < JJ / 4; jj++) vv[aa][jj] = loadu(&v[(a + aa) * J + j + jj * 4]);
@@ -192,7 +207,7 @@ static inline int CeedTensorContract_Avx_Single(CeedTensorContract contract, Cee
   const CeedInt a = (A / AA) * AA;
 
   for (CeedInt j = 0; j < (J / JJ) * JJ; j += JJ) {
-    rtype vv[AA][JJ / 4];  // Output tile to be held in registers
+    rtype vv[CEED_AVX_TILE(AA, 4)][CEED_AVX_TILE(JJ / 4, 2)];  // Output tile to be held in registers
 
     for (CeedInt aa = 0; aa < A - a; aa++) {
       for (CeedInt jj = 0; jj < JJ / 4; jj++) vv[aa][jj] = loadu(&v[(a + aa) * J + j + jj * 4]);
@@ -218,7 +233,7 @@ static inline int CeedTensorContract_Avx_Single(CeedTensorContract contract, Cee
   for (CeedInt j = (J / JJ) * JJ; j < J; j += 4) {
     // Blocks of 4 rows
     for (CeedInt a = 0; a < A_break; a += AA) {
-      rtype vv[AA];  // Output tile to be held in registers
+      rtype vv[CEED_AVX_TILE(AA, 4)];  // Output tile to be held in registers
 
       for (CeedInt aa = 0; aa < AA; aa++) vv[aa] = loadu(&v[(a + aa) * J + j]);
       for (CeedInt b = 0; b < B; b++) {

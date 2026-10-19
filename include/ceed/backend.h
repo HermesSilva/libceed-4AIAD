@@ -22,7 +22,24 @@
 #define CEED_INTERN extern CEED_VISIBILITY(hidden)
 #endif
 
+#if defined(_MSC_VER) && !defined(__clang__)
+#define CEED_UNUSED
+#else
 #define CEED_UNUSED __attribute__((unused))
+#endif
+
+/**
+  @ingroup Ceed
+  4AIAD: declare a function-scope array of run-time length.
+    A C99 VLA where supported; MSVC has no VLAs, so there it is `_alloca` storage, which has the same lifetime as the enclosing function.
+    Do not use inside loops: `_alloca` storage is only released when the function returns.
+**/
+#if defined(_MSC_VER) && !defined(__clang__)
+#include <malloc.h>
+#define CEED_VLA(type, name, n) type *name = (type *)_alloca(sizeof(type) * (size_t)(n))
+#else
+#define CEED_VLA(type, name, n) type name[n]
+#endif
 
 #define CEED_MAX_RESOURCE_LEN 1024
 #define CEED_MAX_BACKEND_PRIORITY UINT_MAX

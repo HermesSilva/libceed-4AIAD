@@ -2,15 +2,15 @@
 # make only. This file mirrors the Makefile's source selection for the backends we use:
 #   CPU: ref, blocked, opt, avx (always), cpu-gen JIT is not built (it needs dlopen + a runtime
 #   compiler); GPU: cuda-ref, cuda-shared, cuda-gen (CEED_WITH_CUDA).
-# libCEED is C99 with VLAs and GNU attributes, which cl.exe does not accept: configure it with
-# clang-cl (same MSVC ABI, CRT and linker).
+# Built with MSVC v145 (cl), C17: the few C99 VLAs of upstream are replaced by fixed-size or
+# heap storage under _MSC_VER (marked 4AIAD).
 cmake_minimum_required(VERSION 3.24)
 project(libCEED VERSION 1.0.1 LANGUAGES C CXX)
 
 option(CEED_WITH_AVX "Build the AVX backends" ON)
 option(CEED_WITH_CUDA "Build the CUDA backends" OFF)
 
-set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 if(CEED_WITH_CUDA)
   enable_language(CUDA)
@@ -55,8 +55,14 @@ target_include_directories(ceed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 # Symbol visibility attributes are ELF-only.
 target_compile_definitions(ceed PUBLIC CEED_SKIP_VISIBILITY _CRT_SECURE_NO_WARNINGS)
+if(MSVC)
+  # Standard preprocessor (_Pragma, __VA_OPT__) for the library and for consumers of its headers;
+  # GNU __restrict__ spelling in the public headers.
+  target_compile_options(ceed PUBLIC $<$<COMPILE_LANGUAGE:C,CXX>:/Zc:preprocessor>)
+  target_compile_definitions(ceed PUBLIC __restrict__=__restrict)
+endif()
 if(CEED_WITH_AVX)
-  set_source_files_properties(backends/avx/ceed-avx-tensor.c PROPERTIES COMPILE_OPTIONS "-mavx2;-mfma")
+  set_source_files_properties(backends/avx/ceed-avx-tensor.c PROPERTIES COMPILE_OPTIONS "/arch:AVX2")
 endif()
 if(CEED_WITH_CUDA)
   target_compile_definitions(ceed PRIVATE CEED_CUDA_DIR="${CUDAToolkit_LIBRARY_ROOT}")

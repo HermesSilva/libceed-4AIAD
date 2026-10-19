@@ -91,7 +91,9 @@ static int CeedBasisApplyCore_Ref(CeedBasis basis, bool apply_add, CeedInt num_e
           }
 
           CeedInt           pre = num_comp * CeedIntPow(P, dim - 1), post = num_elem;
-          CeedScalar        tmp[2][num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1)];
+          CEED_VLA(CeedScalar, tmp_0, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CEED_VLA(CeedScalar, tmp_1, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CeedScalar       *tmp[2] = {tmp_0, tmp_1};
           const CeedScalar *interp_1d;
           CeedSymmetryType  interp_1d_symmetry;
           const CeedScalar *interp_1d_even = NULL, *interp_1d_odd = NULL;
@@ -166,8 +168,10 @@ static int CeedBasisApplyCore_Ref(CeedBasis basis, bool apply_add, CeedInt num_e
             post *= Q;
           }
         } else if (has_collocated_grad && dim == 3) {  // Use Collocated gradient to cut FLOPs
-          CeedScalar        tmp[2][num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1)];
-          CeedScalar        interp[num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1)];
+          CEED_VLA(CeedScalar, tmp_0, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CEED_VLA(CeedScalar, tmp_1, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CEED_VLA(CeedScalar, interp, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CeedScalar       *tmp[2] = {tmp_0, tmp_1};
           CeedSymmetryType  interp_1d_symmetry;
           const CeedScalar *interp_1d;
           const CeedScalar *interp_1d_even = NULL, *interp_1d_odd = NULL;
@@ -277,7 +281,9 @@ static int CeedBasisApplyCore_Ref(CeedBasis basis, bool apply_add, CeedInt num_e
             P = Q_1d;
             Q = P_1d;
           }
-          CeedScalar tmp[2][num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1)];
+          CEED_VLA(CeedScalar, tmp_0, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CEED_VLA(CeedScalar, tmp_1, num_elem * num_comp * Q * CeedIntPow(P > Q ? P : Q, dim - 1));
+          CeedScalar *tmp[2] = {tmp_0, tmp_1};
 
           // Dim**2 contractions, apply grad when pass == dim
           for (CeedInt p = 0; p < dim; p++) {
