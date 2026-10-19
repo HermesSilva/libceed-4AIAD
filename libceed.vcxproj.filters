@@ -1,0 +1,235 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="backends">
+      <UniqueIdentifier>{f70b1749-f5be-bc4b-a822-6891d03c2682}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\avx">
+      <UniqueIdentifier>{ddf44a23-38eb-9555-20c0-e1784c3eb824}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\blocked">
+      <UniqueIdentifier>{11da67b3-d11e-b05f-4de8-f826eef54f63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\opt">
+      <UniqueIdentifier>{ff7976a1-5c0a-f9bc-773c-6ae275dc0d47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\ref">
+      <UniqueIdentifier>{a496ff9d-412f-9f56-82e6-c9199b24f60d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\weak">
+      <UniqueIdentifier>{9286dd1b-a1c7-b574-6b66-72478fb57747}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery">
+      <UniqueIdentifier>{5e51000c-608b-1a86-a9d8-a5b4f23945dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery\identity">
+      <UniqueIdentifier>{02459421-d44b-f83b-dbe0-bcaf2a94b6ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery\mass">
+      <UniqueIdentifier>{3da1769a-7ec3-f37c-ed07-114b223468de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery\mass-vector">
+      <UniqueIdentifier>{e66f8ea7-08d3-dda7-aaae-ecd150a32b23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery\poisson">
+      <UniqueIdentifier>{2292b9b3-2a55-9a7c-9f92-148f4115bb1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery\poisson-vector">
+      <UniqueIdentifier>{e7dbf11a-f2a9-7c3a-06db-53b7f2e4ccfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gallery\scale">
+      <UniqueIdentifier>{ebd83dce-8175-94b3-7027-7ef0def6b492}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="interface">
+      <UniqueIdentifier>{7b09d4ae-c935-6ef7-e490-8726bff79b2d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="gallery\identity\ceed-identity-to-scalar.c">
+      <Filter>gallery\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\identity\ceed-identity.c">
+      <Filter>gallery\identity</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\mass-vector\ceed-vectormassapply.c">
+      <Filter>gallery\mass-vector</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\mass\ceed-mass1dbuild.c">
+      <Filter>gallery\mass</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\mass\ceed-mass2dbuild.c">
+      <Filter>gallery\mass</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\mass\ceed-mass3dbuild.c">
+      <Filter>gallery\mass</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\mass\ceed-massapply.c">
+      <Filter>gallery\mass</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson-vector\ceed-vectorpoisson1dapply.c">
+      <Filter>gallery\poisson-vector</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson-vector\ceed-vectorpoisson2dapply.c">
+      <Filter>gallery\poisson-vector</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson-vector\ceed-vectorpoisson3dapply.c">
+      <Filter>gallery\poisson-vector</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson\ceed-poisson1dapply.c">
+      <Filter>gallery\poisson</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson\ceed-poisson1dbuild.c">
+      <Filter>gallery\poisson</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson\ceed-poisson2dapply.c">
+      <Filter>gallery\poisson</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson\ceed-poisson2dbuild.c">
+      <Filter>gallery\poisson</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson\ceed-poisson3dapply.c">
+      <Filter>gallery\poisson</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\poisson\ceed-poisson3dbuild.c">
+      <Filter>gallery\poisson</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\scale\ceed-scale-scalar.c">
+      <Filter>gallery\scale</Filter>
+    </ClCompile>
+    <ClCompile Include="gallery\scale\ceed-scale.c">
+      <Filter>gallery\scale</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-basis.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-config.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-elemrestriction.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-env.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-jit-source-root-install.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-jit-tools.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-object.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-operator.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-preconditioning.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-qfunction-register.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-qfunction.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-qfunctioncontext.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-register.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-tensor.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-types.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-vector.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="interface\ceed.c">
+      <Filter>interface</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-basis.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-operator.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-qfunction.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-qfunctioncontext.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-restriction.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-tensor.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref-vector.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ref\ceed-ref.c">
+      <Filter>backends\ref</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\blocked\ceed-blocked-operator.c">
+      <Filter>backends\blocked</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\blocked\ceed-blocked.c">
+      <Filter>backends\blocked</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\opt\ceed-opt-blocked.c">
+      <Filter>backends\opt</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\opt\ceed-opt-operator.c">
+      <Filter>backends\opt</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\opt\ceed-opt-serial.c">
+      <Filter>backends\opt</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\opt\ceed-opt-tensor.c">
+      <Filter>backends\opt</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\avx\ceed-avx-blocked.c">
+      <Filter>backends\avx</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\avx\ceed-avx-serial.c">
+      <Filter>backends\avx</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\avx\ceed-avx-tensor.c">
+      <Filter>backends\avx</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-backend-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-cpu-gen-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-memcheck-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-sve-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-sme-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-xsmm-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-hip-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-sycl-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-magma-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-cuda-weak.c">
+      <Filter>backends\weak</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

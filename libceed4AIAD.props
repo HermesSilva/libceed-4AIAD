@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- 4AIAD: settings of libceed.vcxproj (static library, MSVC v145, C17, /MD). Inside Tootega AIAD the
+       library goes where its projects link them from; standalone, into _build here. -->
+  <PropertyGroup>
+    <CeedOut Condition="'$(AiadRoot)' != ''">$(AiadRoot)_build\$(Configuration)\</CeedOut>
+    <CeedOut Condition="'$(AiadRoot)' == ''">$(MSBuildThisFileDirectory)_build\$(Configuration)\</CeedOut>
+    <OutDir>$(CeedOut)lib\</OutDir>
+    <IntDir>$(CeedOut)obj\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <!-- No /Zc:inline: it drops the unreferenced .pxrctor entries that run the static OpenUSD
+           registrations (TF_REGISTRY_FUNCTION, plugin types). -->
+      <RemoveUnreferencedCodeData>false</RemoveUnreferencedCodeData>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)' == 'Release'">
+    <ClCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+  </ItemDefinitionGroup>
+</Project>

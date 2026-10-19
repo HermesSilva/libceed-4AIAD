@@ -38,7 +38,8 @@ cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cl -D
 cmake --build build && cmake --install build --prefix <prefix>
 ```
 
-It installs `ceed.lib` and a CMake package (`find_package(libCEED CONFIG)`, target `libCEED::ceed`).
+Tootega AIAD builds it with the Visual Studio project `libceed.vcxproj` (+ `libceed4AIAD.props`), same sources
+and settings, into `libceed.lib`. It installs `ceed.lib` and a CMake package (`find_package(libCEED CONFIG)`, target `libCEED::ceed`).
 The CUDA backends are wired in CMake but not validated yet.
 
 ## Branches

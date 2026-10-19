@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FE93FAB5-DE41-357E-AE27-5836ABB33194}</ProjectGuid>
+    <RootNamespace>ceed</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(MSBuildThisFileDirectory)libceed4AIAD.props" />
+  </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CEED_SKIP_VISIBILITY;_CRT_SECURE_NO_WARNINGS;__restrict__=__restrict;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="gallery\identity\ceed-identity-to-scalar.c" />
+    <ClCompile Include="gallery\identity\ceed-identity.c" />
+    <ClCompile Include="gallery\mass-vector\ceed-vectormassapply.c" />
+    <ClCompile Include="gallery\mass\ceed-mass1dbuild.c" />
+    <ClCompile Include="gallery\mass\ceed-mass2dbuild.c" />
+    <ClCompile Include="gallery\mass\ceed-mass3dbuild.c" />
+    <ClCompile Include="gallery\mass\ceed-massapply.c" />
+    <ClCompile Include="gallery\poisson-vector\ceed-vectorpoisson1dapply.c" />
+    <ClCompile Include="gallery\poisson-vector\ceed-vectorpoisson2dapply.c" />
+    <ClCompile Include="gallery\poisson-vector\ceed-vectorpoisson3dapply.c" />
+    <ClCompile Include="gallery\poisson\ceed-poisson1dapply.c" />
+    <ClCompile Include="gallery\poisson\ceed-poisson1dbuild.c" />
+    <ClCompile Include="gallery\poisson\ceed-poisson2dapply.c" />
+    <ClCompile Include="gallery\poisson\ceed-poisson2dbuild.c" />
+    <ClCompile Include="gallery\poisson\ceed-poisson3dapply.c" />
+    <ClCompile Include="gallery\poisson\ceed-poisson3dbuild.c" />
+    <ClCompile Include="gallery\scale\ceed-scale-scalar.c" />
+    <ClCompile Include="gallery\scale\ceed-scale.c" />
+    <ClCompile Include="interface\ceed-basis.c" />
+    <ClCompile Include="interface\ceed-config.c">
+      <PreprocessorDefinitions>CEED_GIT_VERSION=&quot;4AIAD&quot;;CEED_BUILD_CONFIGURATION=&quot;// Build Configuration: Visual Studio (4AIAD)&quot;;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-elemrestriction.c" />
+    <ClCompile Include="interface\ceed-env.c" />
+    <ClCompile Include="interface\ceed-jit-source-root-install.c">
+      <PreprocessorDefinitions>CEED_JIT_SOURCE_ROOT_DEFAULT=&quot;$(MSBuildThisFileDirectory.Replace(&apos;\&apos;, &apos;/&apos;))include/&quot;;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="interface\ceed-jit-tools.c" />
+    <ClCompile Include="interface\ceed-object.c" />
+    <ClCompile Include="interface\ceed-operator.c" />
+    <ClCompile Include="interface\ceed-preconditioning.c" />
+    <ClCompile Include="interface\ceed-qfunction-register.c" />
+    <ClCompile Include="interface\ceed-qfunction.c" />
+    <ClCompile Include="interface\ceed-qfunctioncontext.c" />
+    <ClCompile Include="interface\ceed-register.c" />
+    <ClCompile Include="interface\ceed-tensor.c" />
+    <ClCompile Include="interface\ceed-types.c" />
+    <ClCompile Include="interface\ceed-vector.c" />
+    <ClCompile Include="interface\ceed.c" />
+    <ClCompile Include="backends\ref\ceed-ref-basis.c" />
+    <ClCompile Include="backends\ref\ceed-ref-operator.c" />
+    <ClCompile Include="backends\ref\ceed-ref-qfunction.c" />
+    <ClCompile Include="backends\ref\ceed-ref-qfunctioncontext.c" />
+    <ClCompile Include="backends\ref\ceed-ref-restriction.c" />
+    <ClCompile Include="backends\ref\ceed-ref-tensor.c" />
+    <ClCompile Include="backends\ref\ceed-ref-vector.c" />
+    <ClCompile Include="backends\ref\ceed-ref.c" />
+    <ClCompile Include="backends\blocked\ceed-blocked-operator.c" />
+    <ClCompile Include="backends\blocked\ceed-blocked.c" />
+    <ClCompile Include="backends\opt\ceed-opt-blocked.c" />
+    <ClCompile Include="backends\opt\ceed-opt-operator.c" />
+    <ClCompile Include="backends\opt\ceed-opt-serial.c" />
+    <ClCompile Include="backends\opt\ceed-opt-tensor.c" />
+    <ClCompile Include="backends\avx\ceed-avx-blocked.c" />
+    <ClCompile Include="backends\avx\ceed-avx-serial.c" />
+    <ClCompile Include="backends\avx\ceed-avx-tensor.c">
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="backends\weak\ceed-backend-weak.c" />
+    <ClCompile Include="backends\weak\ceed-cpu-gen-weak.c" />
+    <ClCompile Include="backends\weak\ceed-memcheck-weak.c" />
+    <ClCompile Include="backends\weak\ceed-sve-weak.c" />
+    <ClCompile Include="backends\weak\ceed-sme-weak.c" />
+    <ClCompile Include="backends\weak\ceed-xsmm-weak.c" />
+    <ClCompile Include="backends\weak\ceed-hip-weak.c" />
+    <ClCompile Include="backends\weak\ceed-sycl-weak.c" />
+    <ClCompile Include="backends\weak\ceed-magma-weak.c" />
+    <ClCompile Include="backends\weak\ceed-cuda-weak.c" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
